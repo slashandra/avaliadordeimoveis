@@ -99,7 +99,7 @@ export const HTML_MANUAL = `
             <div class="mk-eyebrow">Avaliador de Imóveis</div>
             <div class="mk-h1">Entrar</div>
             <div class="mk-sub">Acesse sua conta de avaliador</div>
-            <div class="mk-field"><div class="mk-label">E-mail</div><div class="mk-input muted">gustavo.padua@fazenda.mg.gov.br</div></div>
+            <div class="mk-field"><div class="mk-label">E-mail</div><div class="mk-input muted">avaliador@fazenda.mg.gov.br</div></div>
             <div class="mk-field"><div class="mk-label">Senha</div><div class="mk-input muted">••••••••••</div></div>
             <span class="mk-btn">Entrar</span>
           </div>
@@ -405,8 +405,8 @@ export const HTML_MANUAL = `
         </div>
       </div>
       <div class="note" style="margin-top: 20px;">
-        <div class="label">Avaliador responsável pela metodologia</div>
-        <p>Gustavo de Pádua Andrade Pereira — MASP 669.819-5. Esses parâmetros ficam travados no sistema (ver seção Parâmetros) justamente para preservar o critério original entre todos os laudos.</p>
+        <div class="label">Critério padronizado</div>
+        <p>Esses parâmetros ficam travados no sistema (ver seção Parâmetros) justamente para preservar o mesmo critério de análise entre todos os laudos.</p>
       </div>
     </section>
 
@@ -440,7 +440,7 @@ export const HTML_MANUAL = `
     </section>
 
     <footer class="manual-footer">
-      Manual do Avaliador de Imóveis — Método Evolutivo · Passos/MG e região · Metodologia definida por Gustavo de Pádua Andrade Pereira (MASP 669.819-5)
+      Manual do Avaliador de Imóveis — Método Evolutivo · Passos/MG e região
     </footer>
   </main>
 </div>
