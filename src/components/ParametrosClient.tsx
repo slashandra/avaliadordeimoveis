@@ -15,6 +15,30 @@ type Aba = (typeof ABAS)[number];
 
 const ESTADOS: EstadoConservacao[] = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
+const DESCRICAO_ESTADOS: Record<EstadoConservacao, string> = {
+  A: "Novo",
+  B: "Entre novo e regular",
+  C: "Regular",
+  D: "Entre regular e reparos simples",
+  E: "Reparos simples",
+  F: "Entre reparos simples e importantes",
+  G: "Reparos importantes",
+  H: "Entre reparos importantes e sem valor",
+};
+
+const FONTES: Record<Aba, string> = {
+  Cidades:
+    "Índices aplicados sobre os valores-base de Passos/MG conforme critério do avaliador responsável, refletindo o mercado imobiliário de cada município da região.",
+  Terreno:
+    "Valores-base do m² de terreno para Passos/MG (categoria central/perimetral/periférica × padrão máxima/média/mínima), conforme prompt de avaliação do avaliador responsável.",
+  "CUB (construção)":
+    "Custo Unitário Básico (CUB/m²) por padrão construtivo, extraído do SINDUSCOM/MG de novembro de 2023, calculado conforme a ABNT NBR 12.721:2006 (novos projetos, memoriais descritivos e critérios de orçamentação).",
+  "Vida útil":
+    "Vida útil estimada por tipo de construção, conforme Tabela Bureau of Internal Revenue — referência usada para calcular a idade em % da vida útil de cada imóvel.",
+  "Ross-Heidecke":
+    "Tabela de Ross-Heidecke para depreciação de imóveis: cruza a idade em % da vida útil (arredondada para cima ao próximo número par) com o estado de conservação (A a H) pra obter o fator de depreciação aplicado ao valor da construção.",
+};
+
 interface Props {
   cidadesIniciais: Cidade[];
   parametrosTerrenoIniciais: ParametroTerreno[];
@@ -62,6 +86,11 @@ export function ParametrosClient({
           </button>
         ))}
       </div>
+
+      <p className="mb-4 text-xs leading-relaxed text-ink/50">
+        <span className="font-medium text-ink/60">Fonte: </span>
+        {FONTES[aba]}
+      </p>
 
       {aba === "Cidades" && (
         <div className="card overflow-hidden">
@@ -152,9 +181,30 @@ export function ParametrosClient({
       )}
 
       {aba === "Ross-Heidecke" && (
-        <div className="card overflow-x-auto">
+        <div className="flex flex-col gap-4">
+          <div className="card overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="bg-ink/5 text-left text-xs uppercase tracking-wide text-ink/50">
+                <tr>
+                  <th className="px-4 py-2.5">Código</th>
+                  <th className="px-4 py-2.5">Estado de conservação</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-ink/8">
+                {ESTADOS.map((e) => (
+                  <tr key={e}>
+                    <td className="px-4 py-2 font-medium">{e}</td>
+                    <td className="px-4 py-2">{DESCRICAO_ESTADOS[e]}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="card overflow-x-auto">
           <p className="px-4 pt-4 text-xs text-ink/50">
-            Fator de depreciação por % de vida consumida (linhas) × estado de conservação (colunas).
+            Fator de depreciação por % de vida consumida (linhas) × estado de conservação (colunas, ver
+            legenda acima).
           </p>
           <table className="w-full text-sm">
             <thead className="bg-ink/5 text-left text-xs uppercase tracking-wide text-ink/50">
@@ -185,6 +235,7 @@ export function ParametrosClient({
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>
