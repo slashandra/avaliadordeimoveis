@@ -6,7 +6,7 @@ export default async function AvaliacoesPage() {
   const supabase = createClient();
   const { data: avaliacoes } = await supabase
     .from("avaliacoes")
-    .select("id, tipo, endereco, status, resultado, created_at, clientes(nome), cidades(nome)")
+    .select("id, tipo, protocolo, proprietario_nome, endereco, status, resultado, created_at, cidades(nome)")
     .order("created_at", { ascending: false });
 
   return (
@@ -37,7 +37,7 @@ export default async function AvaliacoesPage() {
               >
                 <div>
                   <div className="mb-1 flex items-center gap-2">
-                    <p className="font-medium">{a.clientes?.nome ?? "Sem cliente"}</p>
+                    <p className="font-medium">{a.proprietario_nome ?? "Sem proprietário informado"}</p>
                     <span
                       className={`badge ${a.status === "concluida" ? "badge-concluida" : "badge-rascunho"}`}
                     >
@@ -46,6 +46,7 @@ export default async function AvaliacoesPage() {
                   </div>
                   <p className="text-sm text-ink/50">
                     {a.tipo === "urbano" ? "Urbano" : "Rural"} · {a.cidades?.nome ?? "—"}
+                    {a.protocolo ? ` · Protocolo ${a.protocolo}` : ""}
                     {a.endereco ? ` · ${a.endereco}` : ""}
                   </p>
                 </div>

@@ -42,7 +42,6 @@ const moeda = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
 interface Props {
-  clientes: { id: string; nome: string }[];
   cidades: Cidade[];
   parametrosTerreno: ParametroTerreno[];
   padroesConstrutivos: PadraoConstrutivo[];
@@ -51,7 +50,6 @@ interface Props {
 }
 
 export function NovaAvaliacaoClient({
-  clientes,
   cidades,
   parametrosTerreno,
   padroesConstrutivos,
@@ -60,9 +58,11 @@ export function NovaAvaliacaoClient({
 }: Props) {
   const router = useRouter();
   const [tipo, setTipo] = useState<"urbano" | "rural">("urbano");
-  const [clienteId, setClienteId] = useState("");
+  const [protocolo, setProtocolo] = useState("");
+  const [proprietarioNome, setProprietarioNome] = useState("");
   const [cidadeId, setCidadeId] = useState(cidades[0]?.id ?? "");
   const [endereco, setEndereco] = useState("");
+  const [foto, setFoto] = useState<File | null>(null);
 
   const [areaTerreno, setAreaTerreno] = useState("");
   const [categoria, setCategoria] = useState<CategoriaTerreno>("central");
@@ -138,6 +138,24 @@ export function NovaAvaliacaoClient({
       return;
     }
 
+    let fotoUrl: string | null = null;
+    if (foto) {
+      const extensao = foto.name.split(".").pop();
+      const caminho = `${user.id}/${crypto.randomUUID()}.${extensao}`;
+      const { error: erroUpload } = await supabase.storage
+        .from("fotos-imoveis")
+        .upload(caminho, foto);
+
+      if (erroUpload) {
+        setSalvando(false);
+        setErro("Não foi possível enviar a foto. Tente novamente.");
+        return;
+      }
+
+      const { data: urlPublica } = supabase.storage.from("fotos-imoveis").getPublicUrl(caminho);
+      fotoUrl = urlPublica.publicUrl;
+    }
+
     const dados =
       tipo === "urbano"
         ? {
@@ -158,10 +176,12 @@ export function NovaAvaliacaoClient({
       .from("avaliacoes")
       .insert({
         avaliador_id: user.id,
-        cliente_id: clienteId || null,
         cidade_id: cidadeId || null,
         tipo,
+        protocolo: protocolo || null,
+        proprietario_nome: proprietarioNome || null,
         endereco: endereco || null,
+        foto_url: fotoUrl,
         status: tipo === "urbano" && resultado ? "concluida" : "rascunho",
         dados,
         resultado: resultado ?? {},
@@ -203,15 +223,21 @@ export function NovaAvaliacaoClient({
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
-            <label className="label">Cliente</label>
-            <select value={clienteId} onChange={(e) => setClienteId(e.target.value)} className="input">
-              <option value="">Sem cliente vinculado</option>
-              {clientes.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.nome}
-                </option>
-              ))}
-            </select>
+            <label className="label">Protocolo ITCD</label>
+            <input
+              value={protocolo}
+              onChange={(e) => setProtocolo(e.target.value)}
+              placeholder="Nº do protocolo"
+              className="input"
+            />
+          </div>
+          <div>
+            <label className="label">Proprietário / solicitante</label>
+            <input
+              value={proprietarioNome}
+              onChange={(e) => setProprietarioNome(e.target.value)}
+              className="input"
+            />
           </div>
           <div>
             <label className="label">Município</label>
@@ -223,9 +249,18 @@ export function NovaAvaliacaoClient({
               ))}
             </select>
           </div>
-          <div className="sm:col-span-2">
+          <div>
             <label className="label">Endereço</label>
             <input value={endereco} onChange={(e) => setEndereco(e.target.value)} className="input" />
+          </div>
+          <div className="sm:col-span-2">
+            <label className="label">Foto do imóvel (opcional)</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFoto(e.target.files?.[0] ?? null)}
+              className="input file:mr-3 file:rounded-md file:border-0 file:bg-ink/5 file:px-3 file:py-1.5 file:text-sm file:font-medium"
+            />
           </div>
         </div>
       </div>

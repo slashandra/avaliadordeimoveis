@@ -8,7 +8,7 @@ export default async function AvaliacaoDetalhePage({ params }: { params: { id: s
 
   const { data: avaliacao } = await supabase
     .from("avaliacoes")
-    .select("*, clientes(nome), cidades(nome), avaliadores(nome, masp)")
+    .select("*, cidades(nome), avaliadores(nome, masp)")
     .eq("id", params.id)
     .single();
 

@@ -12,21 +12,39 @@ interface Props {
   tiposConstrucao: TipoConstrucao[];
 }
 
+async function fotoParaBase64(url: string): Promise<string | null> {
+  try {
+    const resposta = await fetch(url);
+    const blob = await resposta.blob();
+    return await new Promise((resolve) => {
+      const leitor = new FileReader();
+      leitor.onloadend = () => resolve(leitor.result as string);
+      leitor.onerror = () => resolve(null);
+      leitor.readAsDataURL(blob);
+    });
+  } catch {
+    return null;
+  }
+}
+
 export function AvaliacaoDetalheClient({ avaliacao, padroesConstrutivos, tiposConstrucao }: Props) {
   const resultado = avaliacao.resultado ?? {};
   const dados = avaliacao.dados ?? {};
 
-  function baixarPdf() {
+  async function baixarPdf() {
     const padrao = padroesConstrutivos.find((p) => p.id === dados.construcao?.padrao_construtivo_id);
     const tipo = tiposConstrucao.find((t) => t.id === dados.construcao?.tipo_construcao_id);
+    const fotoBase64 = avaliacao.foto_url ? await fotoParaBase64(avaliacao.foto_url) : null;
 
     const doc = gerarLaudoPdf({
       avaliadorNome: avaliacao.avaliadores?.nome ?? "—",
       avaliadorMasp: avaliacao.avaliadores?.masp ?? null,
-      clienteNome: avaliacao.clientes?.nome ?? null,
+      protocolo: avaliacao.protocolo ?? null,
+      proprietarioNome: avaliacao.proprietario_nome ?? null,
       cidadeNome: avaliacao.cidades?.nome ?? "—",
       endereco: avaliacao.endereco,
       dataAvaliacao: new Date(avaliacao.created_at).toLocaleDateString("pt-BR"),
+      fotoBase64,
       terreno: dados.terreno,
       construcao: dados.construcao
         ? {
@@ -48,7 +66,7 @@ export function AvaliacaoDetalheClient({ avaliacao, padroesConstrutivos, tiposCo
       <div className="mb-8 flex items-start justify-between">
         <div>
           <div className="mb-2 flex items-center gap-2">
-            <h1 className="text-3xl">{avaliacao.clientes?.nome ?? "Sem cliente"}</h1>
+            <h1 className="text-3xl">{avaliacao.proprietario_nome ?? "Sem proprietário informado"}</h1>
             <span
               className={`badge ${avaliacao.status === "concluida" ? "badge-concluida" : "badge-rascunho"}`}
             >
@@ -57,6 +75,7 @@ export function AvaliacaoDetalheClient({ avaliacao, padroesConstrutivos, tiposCo
           </div>
           <p className="text-sm text-ink/60">
             {avaliacao.tipo === "urbano" ? "Imóvel urbano" : "Imóvel rural"} · {avaliacao.cidades?.nome}
+            {avaliacao.protocolo ? ` · Protocolo ${avaliacao.protocolo}` : ""}
             {avaliacao.endereco ? ` · ${avaliacao.endereco}` : ""}
           </p>
         </div>
@@ -66,6 +85,17 @@ export function AvaliacaoDetalheClient({ avaliacao, padroesConstrutivos, tiposCo
           </button>
         ) : null}
       </div>
+
+      {avaliacao.foto_url && (
+        <div className="card mb-6 overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={avaliacao.foto_url}
+            alt="Foto do imóvel avaliado"
+            className="max-h-80 w-full object-cover"
+          />
+        </div>
+      )}
 
       {avaliacao.tipo === "urbano" && resultado.valor_total ? (
         <div className="flex flex-col gap-6">
