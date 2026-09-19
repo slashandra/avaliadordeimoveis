@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 const LINKS = [
   { href: "/avaliacoes", label: "Avaliações" },
   { href: "/parametros", label: "Parâmetros" },
+  { href: "/manual", label: "Manual do usuário" },
 ];
 
 export function NavHeader() {
@@ -33,6 +34,7 @@ export function NavHeader() {
               <Link
                 key={link.href}
                 href={link.href}
+                target={link.href === "/manual" ? "_blank" : undefined}
                 className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
                   ativo ? "bg-field text-white" : "text-ink/70 hover:bg-ink/5"
                 }`}
@@ -41,13 +43,6 @@ export function NavHeader() {
               </Link>
             );
           })}
-          <Link
-            href="/manual"
-            target="_blank"
-            className="ml-2 flex items-center gap-1.5 rounded-lg border border-terra/30 bg-terra-soft px-3 py-1.5 text-sm font-medium text-terra transition-colors hover:bg-terra/15"
-          >
-            <span aria-hidden>📘</span> Manual do usuário
-          </Link>
           <button
             onClick={sair}
             className="ml-1 rounded-lg px-3 py-1.5 text-sm font-medium text-ink/50 hover:bg-ink/5"
