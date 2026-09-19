@@ -10,14 +10,12 @@ import type {
 } from "./tipos";
 
 /**
- * Arredonda a % de vida consumida para o próximo par da tabela de Ross-Heidecke
- * (a tabela só tem linhas pares, de 2 a 100), conforme o critério do avaliador:
- * arredonda pra cima até o primeiro número par.
+ * Arredonda a % de vida consumida para o inteiro mais próximo da tabela de
+ * Ross-Heidecke (que tem uma linha para cada 1% de 0 a 100).
  */
 export function arredondarIdadePercentual(pct: number): number {
   const limitado = Math.max(0, Math.min(100, pct));
-  const parAcima = Math.ceil(limitado / 2) * 2;
-  return Math.max(2, Math.min(100, parAcima));
+  return Math.round(limitado);
 }
 
 export function calcularIdadePercentual(idadeAnos: number, vidaUtilAnos: number): number {

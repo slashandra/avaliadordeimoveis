@@ -223,6 +223,7 @@ function descricaoEstado(codigo: string): string {
     F: "Entre reparos simples e importantes",
     G: "Reparos importantes",
     H: "Entre reparos importantes e sem valor",
+    I: "Sem valor (demolição)",
   };
   return mapa[codigo] ?? "";
 }

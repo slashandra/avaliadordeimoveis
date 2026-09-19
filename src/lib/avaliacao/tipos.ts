@@ -1,6 +1,6 @@
 export type CategoriaTerreno = "central" | "perimetral" | "periferica";
 export type PadraoTerreno = "maxima" | "media" | "minima";
-export type EstadoConservacao = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H";
+export type EstadoConservacao = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I";
 
 export interface ParametroTerreno {
   categoria: CategoriaTerreno;

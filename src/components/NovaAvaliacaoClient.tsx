@@ -24,6 +24,7 @@ const ESTADOS: { codigo: EstadoConservacao; label: string }[] = [
   { codigo: "F", label: "F — Entre reparos simples e importantes" },
   { codigo: "G", label: "G — Reparos importantes" },
   { codigo: "H", label: "H — Entre reparos importantes e sem valor" },
+  { codigo: "I", label: "I — Sem valor (demolição)" },
 ];
 
 const CATEGORIAS: { valor: CategoriaTerreno; label: string }[] = [

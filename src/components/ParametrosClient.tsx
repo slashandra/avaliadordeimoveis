@@ -13,7 +13,7 @@ import type {
 const ABAS = ["Cidades", "Terreno", "CUB (construção)", "Vida útil", "Ross-Heidecke"] as const;
 type Aba = (typeof ABAS)[number];
 
-const ESTADOS: EstadoConservacao[] = ["A", "B", "C", "D", "E", "F", "G", "H"];
+const ESTADOS: EstadoConservacao[] = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
 
 const DESCRICAO_ESTADOS: Record<EstadoConservacao, string> = {
   A: "Novo",
@@ -24,6 +24,7 @@ const DESCRICAO_ESTADOS: Record<EstadoConservacao, string> = {
   F: "Entre reparos simples e importantes",
   G: "Reparos importantes",
   H: "Entre reparos importantes e sem valor",
+  I: "Sem valor (demolição) — sem viabilidade econômica de recuperação",
 };
 
 const FONTES: Record<Aba, string> = {
@@ -36,8 +37,11 @@ const FONTES: Record<Aba, string> = {
   "Vida útil":
     "Vida útil estimada por tipo de construção, conforme Tabela Bureau of Internal Revenue — referência usada para calcular a idade em % da vida útil de cada imóvel.",
   "Ross-Heidecke":
-    "Tabela de Ross-Heidecke para depreciação de imóveis: cruza a idade em % da vida útil (arredondada para cima ao próximo número par) com o estado de conservação (A a H) pra obter o fator de depreciação aplicado ao valor da construção.",
+    "Tabela oficial de fatores de depreciação Ross-Heidecke (fatores diretos, resíduo 0%), com uma linha para cada 1% de idade da vida útil (0 a 100) e estados de conservação de A a I.",
 };
+
+const FONTE_ROSS_HEIDECKE_URL =
+  "https://oficialavaliador.com.br/wp-content/uploads/2022/09/Tabela-de-fatores-de-depreciacao-Ross-Heidecke.pdf";
 
 interface Props {
   cidadesIniciais: Cidade[];
@@ -90,6 +94,19 @@ export function ParametrosClient({
       <p className="mb-4 text-xs leading-relaxed text-ink/50">
         <span className="font-medium text-ink/60">Fonte: </span>
         {FONTES[aba]}
+        {aba === "Ross-Heidecke" && (
+          <>
+            {" "}
+            <a
+              href={FONTE_ROSS_HEIDECKE_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="text-field underline"
+            >
+              Ver tabela original (PDF)
+            </a>
+          </>
+        )}
       </p>
 
       {aba === "Cidades" && (

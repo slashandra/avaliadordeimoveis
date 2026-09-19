@@ -203,7 +203,7 @@ export const HTML_MANUAL = `
             <tr><td class="fname">Categoria do terreno</td><td class="fdesc">Central, perimetral ou periférica — define a faixa de valor do m² do terreno.</td></tr>
             <tr><td class="fname">Padrão do terreno</td><td class="fdesc">Máxima, média ou mínima dentro da categoria escolhida.</td></tr>
             <tr><td class="fname">Padrão construtivo</td><td class="fdesc">Popular, baixo, normal, alto (residencial), normal/alto (comercial) ou galpão industrial — define o CUB/m².</td></tr>
-            <tr><td class="fname">Estado de conservação</td><td class="fdesc">Código de A a H — ver a legenda completa na seção Parâmetros.</td></tr>
+            <tr><td class="fname">Estado de conservação</td><td class="fdesc">Código de A a I — ver a legenda completa na seção Parâmetros.</td></tr>
           </table>
         </div>
       </div>
@@ -268,14 +268,14 @@ export const HTML_MANUAL = `
             </div>
             <table class="mk-table">
               <tr><th>% vida</th><th>A</th><th>B</th><th>C</th><th>D</th></tr>
-              <tr><td>10%</td><td>0,9450</td><td>0,9447</td><td>0,9212</td><td>0,8680</td></tr>
-              <tr><td>20%</td><td>0,8800</td><td>0,8800</td><td>0,8580</td><td>0,8090</td></tr>
-              <tr><td>30%</td><td>0,8050</td><td>0,8050</td><td>0,7850</td><td>0,7400</td></tr>
+              <tr><td>10%</td><td>0,9450</td><td>0,9420</td><td>0,9212</td><td>0,8685</td></tr>
+              <tr><td>20%</td><td>0,8800</td><td>0,8772</td><td>0,8578</td><td>0,8088</td></tr>
+              <tr><td>30%</td><td>0,8050</td><td>0,8024</td><td>0,7847</td><td>0,7399</td></tr>
             </table>
           </div>
         </div>
         <div>
-          <p style="color:var(--ink-soft); font-size: 13.5px; margin-bottom: 6px;">Legenda dos estados de conservação (A a H), usados na coluna da tabela Ross-Heidecke:</p>
+          <p style="color:var(--ink-soft); font-size: 13.5px; margin-bottom: 6px;">Legenda dos estados de conservação (A a I), usados na coluna da tabela Ross-Heidecke:</p>
           <div class="estado-grid">
             <div class="estado-chip"><div class="code">A</div><div class="desc">Novo</div></div>
             <div class="estado-chip"><div class="code">B</div><div class="desc">Entre novo e regular</div></div>
@@ -285,6 +285,7 @@ export const HTML_MANUAL = `
             <div class="estado-chip"><div class="code">F</div><div class="desc">Entre reparos simples e importantes</div></div>
             <div class="estado-chip"><div class="code">G</div><div class="desc">Reparos importantes</div></div>
             <div class="estado-chip"><div class="code">H</div><div class="desc">Entre reparos importantes e sem valor</div></div>
+            <div class="estado-chip"><div class="code">I</div><div class="desc">Sem valor (demolição) — sem viabilidade econômica de recuperação</div></div>
           </div>
         </div>
       </div>
@@ -344,14 +345,14 @@ export const HTML_MANUAL = `
           <span class="num"></span>
           <div>
             <h4>Idade em % da vida útil</h4>
-            <p>A idade do imóvel (em anos) dividida pela vida útil esperada do tipo de construção (casa de alvenaria = 65 anos, apartamento = 60 anos, etc.), arredondada para cima até o próximo número par da tabela.</p>
+            <p>A idade do imóvel (em anos) dividida pela vida útil esperada do tipo de construção (casa de alvenaria = 65 anos, apartamento = 60 anos, etc.), arredondada para o número inteiro mais próximo (a tabela tem uma linha para cada 1% de 0 a 100).</p>
           </div>
         </div>
         <div class="step">
           <span class="num"></span>
           <div>
-            <h4>Estado de conservação (A a H)</h4>
-            <p>Avaliação visual do avaliador sobre o estado físico do imóvel — de "novo" (A) a "sem valor" (H).</p>
+            <h4>Estado de conservação (A a I)</h4>
+            <p>Avaliação visual do avaliador sobre o estado físico do imóvel — de "novo" (A) a "sem valor, demolição" (I), sem viabilidade econômica de recuperação. Nesse caso o fator de depreciação é sempre 0.</p>
           </div>
         </div>
       </div>
@@ -400,7 +401,7 @@ export const HTML_MANUAL = `
           <div class="ic">RH</div>
           <div>
             <h4>Tabela de Ross-Heidecke</h4>
-            <p>Método clássico de depreciação de imóveis, cruzando idade (% da vida útil) e estado de conservação (A a H) para obter o fator de depreciação aplicado ao valor da construção.</p>
+            <p>Método clássico de depreciação de imóveis, cruzando idade (% da vida útil, uma linha para cada 1% de 0 a 100) e estado de conservação (A a I) para obter o fator de depreciação aplicado ao valor da construção. Fonte: <a href="https://oficialavaliador.com.br/wp-content/uploads/2022/09/Tabela-de-fatores-de-depreciacao-Ross-Heidecke.pdf" target="_blank" rel="noreferrer" style="color:var(--field); text-decoration: underline;">Tabela de fatores de depreciação Ross-Heidecke (oficialavaliador.com.br)</a>.</p>
           </div>
         </div>
       </div>
