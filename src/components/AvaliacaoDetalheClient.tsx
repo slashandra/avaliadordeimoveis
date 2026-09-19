@@ -1,6 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { gerarLaudoPdf } from "@/lib/pdf/laudo";
+import { createClient } from "@/lib/supabase/client";
 import type { PadraoConstrutivo, TipoConstrucao } from "@/lib/avaliacao/tipos";
 
 const moeda = (n: number) =>
@@ -28,8 +31,26 @@ async function fotoParaBase64(url: string): Promise<string | null> {
 }
 
 export function AvaliacaoDetalheClient({ avaliacao, padroesConstrutivos, tiposConstrucao }: Props) {
+  const router = useRouter();
+  const [excluindo, setExcluindo] = useState(false);
   const resultado = avaliacao.resultado ?? {};
   const dados = avaliacao.dados ?? {};
+
+  async function excluirAvaliacao() {
+    if (!confirm("Excluir esta avaliação? Essa ação não pode ser desfeita.")) return;
+    setExcluindo(true);
+    const supabase = createClient();
+    const { error } = await supabase.from("avaliacoes").delete().eq("id", avaliacao.id);
+    setExcluindo(false);
+
+    if (error) {
+      alert("Não foi possível excluir a avaliação.");
+      return;
+    }
+
+    router.push("/avaliacoes");
+    router.refresh();
+  }
 
   async function baixarPdf() {
     const padrao = padroesConstrutivos.find((p) => p.id === dados.construcao?.padrao_construtivo_id);
@@ -79,11 +100,20 @@ export function AvaliacaoDetalheClient({ avaliacao, padroesConstrutivos, tiposCo
             {avaliacao.endereco ? ` · ${avaliacao.endereco}` : ""}
           </p>
         </div>
-        {avaliacao.tipo === "urbano" && resultado.valor_total ? (
-          <button onClick={baixarPdf} className="btn-primary shrink-0">
-            Baixar laudo (PDF)
+        <div className="flex shrink-0 items-center gap-2">
+          {avaliacao.tipo === "urbano" && resultado.valor_total ? (
+            <button onClick={baixarPdf} className="btn-primary">
+              Baixar laudo (PDF)
+            </button>
+          ) : null}
+          <button
+            onClick={excluirAvaliacao}
+            disabled={excluindo}
+            className="rounded-lg px-3 py-2 text-sm font-medium text-ink/40 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+          >
+            {excluindo ? "Excluindo..." : "Excluir"}
           </button>
-        ) : null}
+        </div>
       </div>
 
       {avaliacao.foto_url && (
